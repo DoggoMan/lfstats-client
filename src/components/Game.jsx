@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 import {
   EuiPageContent,
   EuiPageHeader,
@@ -10,14 +10,14 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiLoadingSpinner,
-  EuiHorizontalRule,
-} from '@elastic/eui';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
-import { useParams } from 'react-router-dom';
-import LoadError from './LoadError';
-import GameActionsChart from './GameActionsChart';
-import GameActionsList from './GameActionsList';
+  EuiHorizontalRule
+} from "@elastic/eui";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+import { useParams } from "react-router-dom";
+import LoadError from "./LoadError";
+import GameActionsChart from "./GameActionsChart";
+import GameActionsList from "./GameActionsList";
 
 const GET_GAME_ACTIONS = gql`
   query GetGameActions($id: bigint) {
@@ -65,17 +65,17 @@ export default function Game() {
   const {
     data: deltasData,
     loading: deltasLoading,
-    error: deltasError,
+    error: deltasError
   } = useQuery(GET_TEAM_DELTAS, {
-    variables: { id: gameId * 1 },
+    variables: { id: gameId * 1 }
   });
 
   const {
     data: actionsData,
     loading: actionsLoading,
-    error: actionsError,
+    error: actionsError
   } = useQuery(GET_GAME_ACTIONS, {
-    variables: { id: gameId * 1 },
+    variables: { id: gameId * 1 }
   });
 
   return (
@@ -98,7 +98,6 @@ export default function Game() {
         <EuiPageContentBody>
           <EuiFlexGroup justifyContent="center">
             <EuiFlexItem grow={true}>
-              Test
               {(deltasLoading || actionsLoading) && (
                 <EuiLoadingSpinner size="xl" />
               )}

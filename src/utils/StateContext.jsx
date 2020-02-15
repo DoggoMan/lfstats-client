@@ -10,7 +10,9 @@ const StateProvider = props => {
     selectedCenter: null,
     typeFilter: "all",
     redTeamColor: palette[9],
-    greenTeamColor: palette[0]
+    greenTeamColor: palette[0],
+    blueTeamColor: palette[1],
+    nukeColor: palette[7]
   });
 
   return (
