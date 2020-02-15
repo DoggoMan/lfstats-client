@@ -3,9 +3,16 @@ import { EuiInMemoryTable } from "@elastic/eui";
 import EuiCustomLink from "./EuiCustomLink";
 
 export default function MedicHitSummary({ data }) {
+  const items = data.map(item => {
+    return {
+      player_name: item.player.player_name,
+      ...item
+    };
+  });
+
   const columns = [
     {
-      field: "player.player_name",
+      field: "player_name",
       name: "Name",
       dataType: "string",
       sortable: true,
@@ -76,7 +83,7 @@ export default function MedicHitSummary({ data }) {
   return (
     <EuiInMemoryTable
       columns={columns}
-      items={data}
+      items={items}
       search={search}
       compressed={true}
       pagination={true}

@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+import { StateContext } from "../utils/StateContext";
 import { EuiInMemoryTable } from "@elastic/eui";
 import EuiCustomLink from "./EuiCustomLink";
 
 export default function ScorecardList({ scorecards }) {
+  const [state] = useContext(StateContext);
+
+  const items = scorecards.map(item => {
+    return {
+      game_name: item.game.game_name,
+      ...item
+    };
+  });
+
   const columns = [
     {
       field: "player_name",
@@ -39,7 +49,11 @@ export default function ScorecardList({ scorecards }) {
       dataType: "number",
       sortable: true,
       render: (name, item) => {
-        return <span>{Number.parseFloat(name).toFixed(2)}</span>;
+        return (
+          <span style={{ color: state.redTeamColor }}>
+            {Number.parseFloat(name).toFixed(2)}
+          </span>
+        );
       }
     },
     {
@@ -48,7 +62,12 @@ export default function ScorecardList({ scorecards }) {
       dataType: "number",
       sortable: true,
       render: (name, item) => {
-        return <span>{Number.parseFloat(name).toFixed(2)}</span>;
+        return (
+          <span>
+            {Number.parseFloat(name).toFixed(2)} ({item.shot_opponent}/
+            {item.times_zapped})
+          </span>
+        );
       }
     },
     {
@@ -116,7 +135,7 @@ export default function ScorecardList({ scorecards }) {
   return (
     <EuiInMemoryTable
       columns={columns}
-      items={scorecards}
+      items={items}
       search={search}
       compressed={true}
       pagination={true}
