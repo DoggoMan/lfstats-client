@@ -42,9 +42,9 @@ const GameActionsList: FC<Props> = ({ actions }) => {
       field: "playerByPlayerId",
       name: "Player",
       dataType: "string",
-      sortable: true,
+      sortable: item => item.playerByPlayerId?.player_name,
       render: (player, item) => {
-        return <span>{player && player.player_name}</span>;
+        return <span>{player?.player_name}</span>;
       }
     },
     {
@@ -52,7 +52,7 @@ const GameActionsList: FC<Props> = ({ actions }) => {
       name: "Name",
       dataType: "string",
       sortable: item => {
-        return item.id;
+        return item.action_type;
       },
       render: (_, item) => {
         return (
@@ -70,7 +70,7 @@ const GameActionsList: FC<Props> = ({ actions }) => {
       field: "playerByTargetId",
       name: "Target",
       dataType: "string",
-      sortable: true,
+      sortable: item => item?.playerByTargetId?.player_name,
       render: (target, item) => {
         return (
           <span>
@@ -91,7 +91,8 @@ const GameActionsList: FC<Props> = ({ actions }) => {
       items={filtered}
       search={{
         box: {
-          incremental: true
+          incremental: true,
+          schema: true
         },
         filters: [
           {
@@ -111,6 +112,7 @@ const GameActionsList: FC<Props> = ({ actions }) => {
           direction: "asc"
         }
       }}
+      responsive={true}
     />
   );
 };

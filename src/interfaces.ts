@@ -20,7 +20,7 @@ export interface Delta {
 export interface Action {
   id: number
   action_text: string
-  action_time: string
+  action_time: number
   action_type: string
   game_id: number
   game_team: {
