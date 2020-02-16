@@ -1,35 +1,21 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { EuiInMemoryTable } from "@elastic/eui";
 import EuiCustomLink from "./EuiCustomLink";
 
 export default function ScorecardSummary({ data }) {
-  const items = data.map(item => {
-    return {
-      player_name: item.player.player_name,
-      ...item
-    };
-  });
-
   const columns = [
     {
       field: "player_name",
       name: "Name",
       dataType: "string",
       sortable: true,
-      render: (player_name, item) => (
-        <EuiCustomLink to={`/players/${item.player.id}`}>
-          {player_name}
-        </EuiCustomLink>
+      render: (name, item) => (
+        <EuiCustomLink to={`/players/${item.player_id}`}>{name}</EuiCustomLink>
       )
     },
     {
-      field: "player.scorecards_aggregate.aggregate.min.score",
-      name: "Min Score",
-      dataType: "number",
-      sortable: true
-    },
-    {
-      field: "player.scorecards_aggregate.aggregate.avg.score",
+      field: "avg_score",
       name: "Avg Score",
       dataType: "number",
       sortable: true,
@@ -38,19 +24,7 @@ export default function ScorecardSummary({ data }) {
       }
     },
     {
-      field: "player.scorecards_aggregate.aggregate.max.score",
-      name: "Max Score",
-      dataType: "number",
-      sortable: true
-    },
-    {
-      field: "player.scorecards_aggregate.aggregate.min.mvp_points",
-      name: "Min MVP",
-      dataType: "number",
-      sortable: true
-    },
-    {
-      field: "player.scorecards_aggregate.aggregate.avg.mvp_points",
+      field: "avg_mvp",
       name: "Avg MVP",
       dataType: "number",
       sortable: true,
@@ -59,16 +33,43 @@ export default function ScorecardSummary({ data }) {
       }
     },
     {
-      field: "player.scorecards_aggregate.aggregate.max.mvp_points",
-      name: "Max MVP",
+      field: "avg_accuracy",
+      name: "Avg Acc",
+      dataType: "number",
+      sortable: true,
+      render: (name, item) => {
+        return <span>{Number.parseFloat(name * 100).toFixed(2)} %</span>;
+      }
+    },
+    {
+      field: "hit_diff",
+      name: "HitDiff",
+      dataType: "number",
+      sortable: true,
+      render: (name, item) => {
+        return <span>{Number.parseFloat(name).toFixed(2)}</span>;
+      }
+    },
+    {
+      field: "medic_hits",
+      name: "Medic Hits",
       dataType: "number",
       sortable: true
+    },
+    {
+      field: "elim_rate",
+      name: "Elim Rate",
+      dataType: "number",
+      sortable: true,
+      render: (name, item) => {
+        return <span> {(name * 100).toFixed(0)} % </span>;
+      }
     }
   ];
 
   const sorting = {
     sort: {
-      field: "player.scorecards_aggregate.aggregate.avg.mvp_points",
+      field: "avg_mvp",
       direction: "desc"
     },
     allowNeutralSort: false
@@ -83,7 +84,7 @@ export default function ScorecardSummary({ data }) {
   return (
     <EuiInMemoryTable
       columns={columns}
-      items={items}
+      items={data}
       search={search}
       compressed={true}
       pagination={true}
@@ -91,3 +92,18 @@ export default function ScorecardSummary({ data }) {
     />
   );
 }
+
+ScorecardSummary.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      player_id: PropTypes.number,
+      player_name: PropTypes.string,
+      avg_score: PropTypes.number,
+      avg_mvp: PropTypes.number,
+      avg_accuracy: PropTypes.number,
+      hit_diff: PropTypes.number,
+      medic_hits: PropTypes.number,
+      elim_rate: PropTypes.number
+    })
+  )
+};
