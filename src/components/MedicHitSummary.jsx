@@ -1,35 +1,27 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { EuiInMemoryTable } from "@elastic/eui";
 import EuiCustomLink from "./EuiCustomLink";
 
 export default function MedicHitSummary({ data }) {
-  const items = data.map(item => {
-    return {
-      player_name: item.player.player_name,
-      ...item
-    };
-  });
-
   const columns = [
     {
       field: "player_name",
       name: "Name",
       dataType: "string",
       sortable: true,
-      render: (player_name, item) => (
-        <EuiCustomLink to={`/players/${item.player.id}`}>
-          {player_name}
-        </EuiCustomLink>
+      render: (name, item) => (
+        <EuiCustomLink to={`/players/${item.player_id}`}>{name}</EuiCustomLink>
       )
     },
     {
-      field: "player.all.aggregate.sum.medic_hits",
+      field: "sum_all_medic_hits",
       name: "Medic Hits (All)",
       dataType: "number",
       sortable: true
     },
     {
-      field: "player.all.aggregate.avg.medic_hits",
+      field: "avg_all_medic_hits",
       name: "Avg Medic Hits (All)",
       dataType: "number",
       sortable: true,
@@ -38,19 +30,19 @@ export default function MedicHitSummary({ data }) {
       }
     },
     {
-      field: "player.all.aggregate.count",
+      field: "sum_all_games_played",
       name: "Games Played (All)",
       dataType: "number",
       sortable: true
     },
     {
-      field: "player.nonresup.aggregate.sum.medic_hits",
+      field: "sum_nonresup_medic_hits",
       name: "Medic Hits (Non-Resup)",
       dataType: "number",
       sortable: true
     },
     {
-      field: "player.nonresup.aggregate.avg.medic_hits",
+      field: "avg_nonresup_medic_hits",
       name: "Avg Medic Hits (Non-Resup)",
       dataType: "number",
       sortable: true,
@@ -59,7 +51,7 @@ export default function MedicHitSummary({ data }) {
       }
     },
     {
-      field: "player.nonresup.aggregate.count",
+      field: "sum_nonresup_games_played",
       name: "Games Played (Non-Resup)",
       dataType: "number",
       sortable: true
@@ -68,7 +60,7 @@ export default function MedicHitSummary({ data }) {
 
   const sorting = {
     sort: {
-      field: "player.all.aggregate.sum.medic_hits",
+      field: "sum_all_medic_hits",
       direction: "desc"
     },
     allowNeutralSort: false
@@ -83,7 +75,7 @@ export default function MedicHitSummary({ data }) {
   return (
     <EuiInMemoryTable
       columns={columns}
-      items={items}
+      items={data}
       search={search}
       compressed={true}
       pagination={true}
@@ -91,3 +83,18 @@ export default function MedicHitSummary({ data }) {
     />
   );
 }
+
+MedicHitSummary.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      player_id: PropTypes.number,
+      player_name: PropTypes.string,
+      sum_all_medic_hits: PropTypes.number,
+      avg_all_medic_hits: PropTypes.number,
+      sum_all_games_played: PropTypes.number,
+      sum_nonresup_medic_hits: PropTypes.number,
+      avg_nonresup_medic_hits: PropTypes.number,
+      sum_nonresup_games_played: PropTypes.number
+    })
+  )
+};

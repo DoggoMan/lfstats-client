@@ -1,17 +1,12 @@
-import React, { Fragment } from "react";
+import React, { useContext } from "react";
+import { StateContext } from "../utils/StateContext";
 import EuiCustomLink from "./EuiCustomLink";
-import {
-  EuiInMemoryTable,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiPageContentBody,
-  EuiPageContentHeader,
-  EuiPageContentHeaderSection,
-  EuiTitle,
-  EuiText
-} from "@elastic/eui";
+import moment from "moment";
+import { EuiInMemoryTable } from "@elastic/eui";
 
 export default data => {
+  const [state] = useContext(StateContext);
+
   const columns = [
     {
       field: "game_name",
@@ -23,8 +18,12 @@ export default data => {
     },
     {
       field: "game_datetime",
-      name: "time",
-      sortable: true
+      name: "Time",
+      sortable: true,
+      render: (game_datetime, item) => {
+        console.log(moment(game_datetime));
+        return moment.utc(game_datetime).format("YYYY-MM-DD HH:mm");
+      }
     },
     {
       field: "winner",
@@ -32,16 +31,15 @@ export default data => {
       sortable: true,
       render: (winner, item) => {
         let score = 0;
-        let color = "default";
+        let teamColor = state.redTeamColor;
         if (item.winner === "red") {
           score = item.red_adj + item.red_score;
-          color = "danger";
         } else {
           score = item.green_adj + item.green_score;
-          color = "secondary";
+          teamColor = state.greenTeamColor;
         }
 
-        return <EuiText color={color}>{score}</EuiText>;
+        return <span style={{ color: teamColor }}>{score}</span>;
       }
     },
     {
@@ -50,43 +48,34 @@ export default data => {
       sortable: true,
       render: (loser, item) => {
         let score = 0;
-        let color = "default";
-        if (item.winner === "red") {
-          score = item.green_adj + item.green_score;
-          color = "secondary";
-        } else {
+        let teamColor = state.redTeamColor;
+        if (item.winner !== "red") {
           score = item.red_adj + item.red_score;
-          color = "danger";
+        } else {
+          score = item.green_adj + item.green_score;
+          teamColor = state.greenTeamColor;
         }
 
-        return <EuiText color={color}>{score}</EuiText>;
+        return <span style={{ color: teamColor }}>{score}</span>;
       }
     }
   ];
 
-  console.log(data);
+  const sorting = {
+    sort: {
+      field: "game_datetime",
+      direction: "asc"
+    },
+    allowNeutralSort: false
+  };
 
   return (
-    <Fragment>
-      <EuiPageContentHeader>
-        <EuiPageContentHeaderSection>
-          <EuiTitle>
-            <h2>Scorecards</h2>
-          </EuiTitle>
-        </EuiPageContentHeaderSection>
-      </EuiPageContentHeader>
-      <EuiPageContentBody>
-        <EuiFlexGroup justifyContent="center">
-          <EuiFlexItem grow={false}>
-            <EuiInMemoryTable
-              columns={columns}
-              items={data.data}
-              compressed={true}
-              pagination={true}
-            />
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiPageContentBody>
-    </Fragment>
+    <EuiInMemoryTable
+      columns={columns}
+      items={data.data}
+      compressed={true}
+      pagination={true}
+      sorting={sorting}
+    />
   );
 };
