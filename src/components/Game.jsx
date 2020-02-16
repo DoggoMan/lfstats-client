@@ -34,9 +34,11 @@ const GET_GAME_ACTIONS = gql`
         color_desc
       }
       team_index
+      player_id
       playerByPlayerId {
         player_name
       }
+      target_id
       playerByTargetId {
         player_name
       }

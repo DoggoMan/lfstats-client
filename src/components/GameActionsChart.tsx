@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, FC } from "react";
 import { StateContext } from "../utils/StateContext";
 import { Scatter } from "react-chartjs-2";
+import { Delta, Action } from "../interfaces";
 // import { AlarmOn } from "@material-ui/icons";
 // import Icon from "@material-ui/core/Icon";
 
@@ -43,10 +44,15 @@ const options = {
   }
 };
 
-export default function GameActionsChart({ deltas, actions }) {
+interface Props {
+  deltas: Delta[]
+  actions: Action[]
+}
+
+const GameActionsChart: FC<Props> = ({ deltas, actions }) => {
   const [state] = useContext(StateContext);
 
-  const dataOptions = team => {
+  const dataOptions = (team: string) => {
     const isFire = team === "Fire";
     const isIce = team === "Ice";
     const isGreen = team === "Green";
@@ -83,6 +89,8 @@ export default function GameActionsChart({ deltas, actions }) {
 
   const nukes = actions.filter(action => action.action_type === "0405");
 
+  console.log(`Detected nukes`, nukes)
+
   return (
     <Scatter
       data={{
@@ -105,7 +113,7 @@ export default function GameActionsChart({ deltas, actions }) {
             }))
           },
           {
-            ...dataOptions(),
+            ...dataOptions(''),
             label: "Nukes",
             data: nukes.map(action => ({
               x: action.action_time,
@@ -120,3 +128,5 @@ export default function GameActionsChart({ deltas, actions }) {
     />
   );
 }
+
+export default GameActionsChart

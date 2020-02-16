@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, FC, Dispatch, SetStateAction } from "react";
 import { euiPaletteColorBlind } from "@elastic/eui/lib/services";
+import { ContextType } from "../interfaces";
 
-const StateContext = React.createContext([{}, () => {}]);
+const StateContext = React.createContext<[Partial<ContextType>,Dispatch<SetStateAction<ContextType>>]>([{}, () => {}]);
 
-const StateProvider = props => {
+
+const StateProvider: FC = props => {
   const palette = euiPaletteColorBlind();
-  const [state, setState] = useState({
+  const [state, setState] = useState<ContextType>({
     selectedEvent: null,
     selectedCenter: null,
     typeFilter: "all",
