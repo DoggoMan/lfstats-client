@@ -1,16 +1,20 @@
-import React from 'react';
-import { EuiPage, EuiPageBody, EuiSpacer } from '@elastic/eui';
-import LFHeader from './LFHeader';
-import { Route, Switch } from 'react-router-dom';
-import Landing from './Landing';
-import EventsContainer from './EventsContainer';
-import PlayersContainer from './PlayersContainer';
-import CentersContainer from './CentersContainer';
-import GamesContainer from './GamesContainer';
-import Footer from './Footer';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React from "react";
+import { EuiPage, EuiPageBody, EuiSpacer } from "@elastic/eui";
+import LFHeader from "./LFHeader";
+import { Route, Switch } from "react-router-dom";
+import Landing from "./Landing";
+import EventsContainer from "./EventsContainer";
+import PlayersContainer from "./PlayersContainer";
+import CentersContainer from "./CentersContainer";
+import GamesContainer from "./GamesContainer";
+import Footer from "./Footer";
+import { BrowserRouter as Router } from "react-router-dom";
 
-import '@elastic/eui/dist/eui_theme_light.css';
+if (process.env.REACT_APP_THEME === "DARK") {
+  require("@elastic/eui/dist/eui_theme_dark.css");
+} else {
+  require("@elastic/eui/dist/eui_theme_light.css");
+}
 
 export default () => (
   <Router>
