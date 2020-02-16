@@ -8,6 +8,10 @@
     "@elastic/eui": "^19",
     "@material-ui/core": "^4.9.2",
     "@material-ui/icons": "^4.9.1",
+    "@types/jest": "^25.1.2",
+    "@types/node": "^13.7.1",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
     "apollo-boost": "^0.4.7",
     "chart.js": "^2.9.3",
     "graphql": "^14.6.0",
@@ -17,7 +21,8 @@
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.0"
+    "react-scripts": "^3.4.0",
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
