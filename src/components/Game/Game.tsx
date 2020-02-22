@@ -15,9 +15,19 @@ import {
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
-import LoadError from "./LoadError";
+import LoadError from "../LoadError";
 import GameActionsChart from "./GameActionsChart";
+import GameUptimeChart from "./GameUptimeChart";
 import GameActionsList from "./GameActionsList";
+import { GameTeam, GameDetails } from "../../interfaces";
+
+const GET_GAME_DETAILS = gql`
+  query GetGameDetails($id: bigint){
+    games (where: {id: { _eq: $id}}){
+      game_length
+    }
+  }
+`
 
 const GET_GAME_ACTIONS = gql`
   query GetGameActions($id: bigint) {
@@ -46,6 +56,37 @@ const GET_GAME_ACTIONS = gql`
   }
 `;
 
+const GET_GAME_PLAYERS = gql`
+  query getGamePlayers($id: bigint!) {
+    scorecards(where: { game_id: { _eq: $id } }) {
+      game_team {
+        color_desc
+      }
+      survived
+      player {
+        id
+        ipl_id
+        player_name
+      }
+    }
+  }
+`;
+
+interface GetGamePlayersResult {
+  scorecards: {
+    game_team: GameTeam
+    survived: number
+    player: Player
+  }[]
+}
+
+export interface Player {
+      id: number
+      ipl_id: string
+      player_name: string
+}
+
+
 const GET_TEAM_DELTAS = gql`
   query GetTeamDeltas($id: bigint) {
     team_deltas(
@@ -69,7 +110,8 @@ export default function Game() {
     loading: deltasLoading,
     error: deltasError
   } = useQuery(GET_TEAM_DELTAS, {
-    variables: { id: gameId * 1 }
+    variables: { id: Number(gameId
+      )}
   });
 
   const {
@@ -77,7 +119,23 @@ export default function Game() {
     loading: actionsLoading,
     error: actionsError
   } = useQuery(GET_GAME_ACTIONS, {
-    variables: { id: gameId * 1 }
+    variables: { id: Number(gameId)}
+  });
+
+  const {
+    data: playersData,
+    loading: playersLoading,
+    error: playersError
+  } = useQuery<GetGamePlayersResult>(GET_GAME_PLAYERS, {
+    variables: { id: Number(gameId)}
+  });
+
+  const {
+    data: gameDetailsData,
+    loading: gameDetailsLoading,
+    error: gameDetailsError
+  } = useQuery<{games: GameDetails[]}>(GET_GAME_DETAILS, {
+    variables: { id: Number(gameId)}
   });
 
   return (
@@ -108,6 +166,31 @@ export default function Game() {
                 <GameActionsChart
                   deltas={deltasData.team_deltas}
                   actions={actionsData.game_actions}
+                />
+              )}
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiPageContentBody>
+        <EuiHorizontalRule margin="xxl" />
+         <EuiPageContentHeader>
+          <EuiPageContentHeaderSection>
+            <EuiTitle>
+              <h2>Uptime Chart</h2>
+            </EuiTitle>
+          </EuiPageContentHeaderSection>
+        </EuiPageContentHeader>
+        <EuiPageContentBody>
+          <EuiFlexGroup justifyContent="center">
+            <EuiFlexItem grow={true}>
+              {(gameDetailsLoading || playersLoading || actionsLoading) && (
+                <EuiLoadingSpinner size="xl" />
+              )}
+              {(gameDetailsError || playersError || actionsError) && <LoadError />}
+              {(gameDetailsData && playersData && actionsData) && (
+                <GameUptimeChart
+                  gameDetails={gameDetailsData.games[0]}
+                  actions={actionsData.game_actions}
+                  scorecards={playersData.scorecards}
                 />
               )}
             </EuiFlexItem>

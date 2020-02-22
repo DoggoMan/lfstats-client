@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import Game from './Game';
+import Game from './Game/Game';
 
 export default function GamesContainer() {
   let match = useRouteMatch();

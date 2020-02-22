@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { EuiInMemoryTable, EuiTableFieldDataColumnType } from "@elastic/eui";
-import { GAME_ACTION_TYPES, GAME_ACTIONS_TARGETS } from "../actionTypes";
-import { msToTime } from "../helpers";
-import { Action } from "../interfaces";
+import { GAME_ACTION_TYPES, GAME_ACTIONS_TARGETS } from "../../actionTypes";
+import { msToTime } from "../../helpers";
+import { Action } from "../../interfaces";
 
 interface Props {
   actions: Action[];

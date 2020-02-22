@@ -1,7 +1,8 @@
 import React, { useContext, FC } from "react";
-import { StateContext } from "../utils/StateContext";
+import { StateContext } from "../../utils/StateContext";
 import { Scatter } from "react-chartjs-2";
-import { Delta, Action } from "../interfaces";
+import { Delta, Action } from "../../interfaces";
+import { msToTime } from "../../helpers";
 
 interface Props {
   deltas: Delta[]
@@ -131,6 +132,12 @@ const GameActionsChart: FC<Props> = ({ deltas, actions }) => {
               display: true,
               gridLines: {
                 display: false
+              },
+              ticks: {
+                callback: function(value: any, index: any, values: any) {
+                        return msToTime(value, "seconds");
+                    }
+ 
               },
               labels: {
                 show: true

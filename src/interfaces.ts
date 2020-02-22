@@ -27,12 +27,30 @@ export interface Action {
     color_desc: string
   }
   team_index: number
-  player_id: string
+  player_id: number
   playerByPlayerId: {
     player_name: string
   }
-  target_id: string
+  target_id: number
   playerByTargetId: {
+    player_name: string
+  }
+}
+
+export interface GameDetails {
+  game_length: number
+}
+
+export interface GameTeam {
+    color_desc: string
+  }
+
+export interface Scorecard {
+  game_team: GameTeam
+  survived: number
+  player: {
+    id: number
+    ipl_id: string
     player_name: string
   }
 }
